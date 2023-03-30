@@ -1,0 +1,9 @@
+「滑动窗口」是一类使用「双指针」技巧，通过两个变量在数组上同向交替移动解决问题的算法。
+这一类问题的思考路径通常是：
+先思考暴力解法，分析暴力解法的缺点（一般而言暴力解法的缺点是重复计算），然后 结合问题的特点，使用「双指针」技巧对暴力解法进行剪枝。
+因此，思考算法设计的合理性是更关键的，这一点适用于所有算法问题。
+
+作者：LeetCode
+链接：https://leetcode-cn.com/problems/longest-repeating-character-replacement/solution/ti-huan-hou-de-zui-chang-zhong-fu-zi-fu-eaacp/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
