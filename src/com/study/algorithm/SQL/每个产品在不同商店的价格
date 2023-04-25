@@ -1,0 +1,60 @@
+表：Products
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| product_id  | int     |
+| store1      | int     |
+| store2      | int     |
+| store3      | int     |
++-------------+---------+
+这张表的主键是product_id（产品Id）。
+每行存储了这一产品在不同商店store1, store2, store3的价格。
+如果这一产品在商店里没有出售，则值将为null。
+ 
+
+请你重构 Products 表，查询每个产品在不同商店的价格，使得输出的格式变为(product_id, store, price) 。如果这一产品在商店里没有出售，则不输出这一行。
+
+输出结果表中的 顺序不作要求 。
+
+查询输出格式请参考下面示例。
+
+ 
+
+示例 1：
+
+输入：
+Products table:
++------------+--------+--------+--------+
+| product_id | store1 | store2 | store3 |
++------------+--------+--------+--------+
+| 0          | 95     | 100    | 105    |
+| 1          | 70     | null   | 80     |
++------------+--------+--------+--------+
+输出：
++------------+--------+-------+
+| product_id | store  | price |
++------------+--------+-------+
+| 0          | store1 | 95    |
+| 0          | store2 | 100   |
+| 0          | store3 | 105   |
+| 1          | store1 | 70    |
+| 1          | store3 | 80    |
++------------+--------+-------+
+解释：
+产品0在store1，store2,store3的价格分别为95,100,105。
+产品1在store1，store3的价格分别为70,80。在store2无法买到。
+
+来源：力扣（LeetCode）
+链接：https://leetcode.cn/problems/rearrange-products-table
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+行转列,union合并
+要查询每个商品在3种商店的价值,那么如果要查询在store1的价值,可以select product_id,store1 as price from Products,同理store2和store3.
+可以使用union关键字,把3个查询合并成一张表.还需要一列标记是哪个商店,可以用 'store1' as store 把store这一列的值都赋值为 'store1' ,同理store2和store3.
+
+select product_id,'store1' as store,store1 as price from Products where store1 != 'null'
+union
+select product_id,'store2' as store,store2 as price from Products where store2 != 'null'
+union
+select product_id,'store3' as store,store3 as price from Products where store3 != 'null'

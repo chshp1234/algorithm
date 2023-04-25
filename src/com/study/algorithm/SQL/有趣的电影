@@ -1,0 +1,39 @@
+某城市开了一家新的电影院，吸引了很多人过来看电影。该电影院特别注意用户体验，专门有个 LED显示板做电影推荐，上面公布着影评和相关电影描述。
+
+作为该电影院的信息部主管，您需要编写一个 SQL查询，找出所有影片描述为非 boring (不无聊) 的并且 id 为奇数 的影片，结果请按等级 rating 排列。
+
+ 
+
+例如，下表 cinema:
+
++---------+-----------+--------------+-----------+
+|   id    | movie     |  description |  rating   |
++---------+-----------+--------------+-----------+
+|   1     | War       |   great 3D   |   8.9     |
+|   2     | Science   |   fiction    |   8.5     |
+|   3     | irish     |   boring     |   6.2     |
+|   4     | Ice song  |   Fantacy    |   8.6     |
+|   5     | House card|   Interesting|   9.1     |
++---------+-----------+--------------+-----------+
+对于上面的例子，则正确的输出是为：
+
++---------+-----------+--------------+-----------+
+|   id    | movie     |  description |  rating   |
++---------+-----------+--------------+-----------+
+|   5     | House card|   Interesting|   9.1     |
+|   1     | War       |   great 3D   |   8.9     |
++---------+-----------+--------------+-----------+
+
+来源：力扣（LeetCode）
+链接：https://leetcode.cn/problems/not-boring-movies
+著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
+
+取余,排序
+1.不等于:<>和!=相同,隐含着不为空，即is not null,官方推荐 <>，因为跨平台，可移植，兼容性强。
+2.取余:mod(x, y),x%y
+3.排序:ORDER BY expression [ ASC | DESC ]
+expressions: 它指定要检索的列。
+ASC: 它是可选的。它将按表达式升序对结果集进行排序(如果没有提供修饰符，则为默认值)。
+DESC: 这也是可选的。它按表达式对结果集按降序排序。
+
+select * from cinema where description != 'boring' and mod(id,2) != 0 order by rating desc
