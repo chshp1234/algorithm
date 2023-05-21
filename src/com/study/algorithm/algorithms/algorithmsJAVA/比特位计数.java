@@ -42,7 +42,7 @@ public class 比特位计数 {
             return result;
         }
         for (int i = 1; i <= num; i++) {
-            result[i] = result[i ^ highBit(i)] + 1;
+            result[i] = result[i ^ highestOneBit(i)] + 1;
         }
 
         //by LeetCode
@@ -60,14 +60,29 @@ public class 比特位计数 {
         return result;
     }
 
-    private int highBit(int cap) {
-        //获取数字cap中，最高位的‘1’
-        cap |= cap >>> 1;
-        cap |= cap >>> 2;
-        cap |= cap >>> 4;
-        cap |= cap >>> 8;
-        cap |= cap >>> 16;
-        return (cap + 1) >>> 1;
+    private int highestOneBit(int num) {
+        //获取数字的最高位的‘1’
+        num |= num >>> 1;
+        num |= num >>> 2;
+        num |= num >>> 4;
+        num |= num >>> 8;
+        num |= num >>> 16;
+        return num - (num >>> 1);
+    }
+
+    private int highestOneBit2(int num) {
+        //获取数字的最高位的‘1’
+        int res = 0;
+        while (num != 0) {
+            res = num;
+            num = num & (num - 1);
+        }
+        return res;
+    }
+
+    private int highestOneBit3(int num) {
+        //获取数字的最高位的‘1’
+        return Integer.highestOneBit(num);
     }
 
     //方法三：动态规划——最低有效位
