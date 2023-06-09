@@ -58,7 +58,7 @@ public class 最大子序和 {
 
         // 结果
         int result = nums[0];
-        // 正数合，负数合
+        // 正数和，负数和
         int positive = -1, negative = 0;
         if (result < 0) {
             negative = result;
@@ -68,23 +68,23 @@ public class 最大子序和 {
 
         for (int i = 1, l = nums.length; i < l; i++) {
             if (nums[i] < 0) {
-                // 如果当前数小于0，负数合相加
+                // 如果当前数小于0，负数和相加
                 negative += nums[i];
                 // 判断最大值（用于比较全负数的数组）
                 result = Math.max(nums[i], result);
             } else {
-                // 如果负数合小于0（表示有负数计算）
+                // 如果负数和小于0（表示有负数计算）
                 if (negative < 0 && (positive + negative < 0)) {
-                    // 如果正数合的绝对值小于负数合的绝对值，
+                    // 如果正数和的绝对值小于负数和的绝对值，
                     // 则舍弃次数之前的计算，重新从此位置开始计算，
                     // 首先判断当前的正数合和当前结果的最大值
                     result = Math.max(positive, result);
                     positive = 0;
                     negative = 0;
                 } else if (negative < 0) {
-                    // 如果正数合的绝对值大于于负数合的绝对值，
-                    // 则把之前的正数合和负数合相加（此值大于0），
-                    // 首先判断并保存之前的正数合和结果的最大值
+                    // 如果正数和的绝对值大于于负数合的绝对值，
+                    // 则把之前的正数合和负数和相加（此值大于0），
+                    // 首先判断并保存之前的正数和和结果的最大值
                     result = Math.max(positive, result);
                     positive += negative;
                     negative = 0;
