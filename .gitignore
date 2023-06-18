@@ -1,3 +1,5 @@
 /src/test/
 /.idea/
 /out/
+/lib/
+/.vscode/
