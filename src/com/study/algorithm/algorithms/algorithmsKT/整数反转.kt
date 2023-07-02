@@ -1,6 +1,6 @@
 package com.study.algorithm.algorithms.algorithmsKT
 
-import kotlin.test.Test
+import org.junit.Test;
 
 class 整数反转 {
 
