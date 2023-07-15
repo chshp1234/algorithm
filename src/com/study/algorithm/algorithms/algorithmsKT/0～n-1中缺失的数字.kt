@@ -43,15 +43,4 @@ class `0～n-1中缺失的数字` {
         "".hashCode()
         return l
     }
-
-    val innr = fun(t: Int): Int {
-        Thread {
-            return@Thread
-        }
-        val m = ::missingNumber
-        print(m(IntArray(6)))
-        print(t)
-        return 1
-    }
-
 }
