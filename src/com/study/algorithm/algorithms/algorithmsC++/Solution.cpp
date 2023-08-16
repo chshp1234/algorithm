@@ -48,9 +48,9 @@ int main()
     vector<char> v1 = {'h','e','l','l','o'};
     reverseString(v1);
     for (char c : v1) {
-        std::cout << c;
+        cout << c;
     }
-    std::cout << std::endl;
+    cout << endl;
 
     return 0;
 }
