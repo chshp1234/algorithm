@@ -49,7 +49,7 @@ import org.junit.Test;
 //著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 public class Dota2参议院 {
     @Test
-    public void LRU缓存机制() {
+    public void Dota2参议院() {
         System.out.println("Dota2参议院:" + predictPartyVictory("DRDRR"));
     }
 
