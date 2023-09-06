@@ -1,9 +1,22 @@
 #include <algorithm>
 #include <bitset>
+#include <cstddef>
 #include <iostream>
+#include <queue>
+#include <unordered_map>
+#include <utility>
 #include <vector>
 
 using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 
 // 反转字符串
 /*
@@ -328,6 +341,117 @@ int minNumber(const vector<int> &nums1, const vector<int> &nums2) {
     return min2 * 10 + min1;
 }
 
+// 最深叶节点的最近公共祖先
+/*给你一个有根节点 root 的二叉树，返回它 最深的叶节点的最近公共祖先 。
+
+回想一下：
+
+叶节点 是二叉树中没有子节点的节点
+树的根节点的 深度 为 0，如果某一节点的深度为 d，那它的子节点的深度就是 d+1
+如果我们假定 A 是一组节点 S 的 最近公共祖先，S 中的每个节点都在以 A 为根节点的子树中，且 A 的深度达到此条件下可能的最大值。
+
+
+示例 1：
+
+
+输入：root = [3,5,1,6,2,0,8,null,null,7,4]
+输出：[2,7,4]
+解释：我们返回值为 2 的节点，在图中用黄色标记。
+在图中用蓝色标记的是树的最深的节点。
+注意，节点 6、0 和 8 也是叶节点，但是它们的深度是 2 ，而节点 7 和 4 的深度是 3 。
+示例 2：
+
+输入：root = [1]
+输出：[1]
+解释：根节点是树中最深的节点，它是它本身的最近公共祖先。
+示例 3：
+
+输入：root = [0,1,3,null,2]
+输出：[2]
+解释：树中最深的叶节点是 2 ，最近公共祖先是它自己。
+
+
+提示：
+
+树中的节点数将在 [1, 1000] 的范围内。
+0 <= Node.val <= 1000
+每个节点的值都是 独一无二 的。
+
+
+注意：本题与力扣 865 重复：https://leetcode-cn.com/problems/smallest-subtree-with-all-the-deepest-nodes/*/
+pair<TreeNode *, int> lcaLeaves(TreeNode *root) {
+    /*
+    深度优先搜索
+    使用dfs遍历，使用一个pair<TreeNode *, int>记录当前子树的最近公共祖先，并记录当前子树的深度。
+    1.遍历到空节点时，返回{NULL, 0};
+    2.递归遍历左子树left和右子树right
+    3.1.如果左子树的节点深度和右子树的节点深度相同，那么，最近的公共祖先就为当前节点
+    3.2.如果左子树的节点深度比右子树的节点深度大，那么最近公共祖先为左子树的最近公共祖先
+    3.3.如果左子树的节点深度比右子树的节点深度小，那么最近公共祖先为右子树的最近公共祖先
+    3.4.节点深度+1，返回当前pair值
+    4.最后递归结束返回pair.first即可获取最近的公共祖先
+    */
+    if (root == NULL) {
+        return {NULL, 0};
+    }
+    auto left = lcaLeaves(root->left);
+    auto right = lcaLeaves(root->right);
+    if (left.second == right.second) {
+        left.first = root;
+        left.second++;
+        return left;
+    }
+    if (left.second > right.second) {
+        left.second++;
+        return left;
+    }
+    right.second++;
+    return right;
+}
+TreeNode *lcaDeepestLeaves(TreeNode *root) {
+    /*
+    广度优先搜索
+    需要两个队列，一个哈希表
+    一个队列tmp记录上一层节点，一个队列que记录下一层节点，一个哈希表childToParent记录每个子节点对应的父节点
+    1.先对que进行遍历，将每个子节点对应的父节点加入哈希表中，并维护上一层节点tmp，直到que队列为空
+    2.1.再遍历tmp（此时tmp里就为二叉树中最后一层的节点）
+    2.2.判断每个节点的父节点是否存在于tmp中，如果不存在，则加入
+    2.3.直到tmp队列大小为1，这1个节点就为最近公共祖先，退出循环
+    3.返回tmp.front();
+    */
+    queue<TreeNode *> tmp;
+    queue<TreeNode *> que;
+    unordered_map<TreeNode *, TreeNode *> childToParent;
+    que.push(root);
+    while (!que.empty()) {
+        int size = que.size();
+        tmp = queue<TreeNode *>(que);
+        for (int i = 0; i < size; i++) {
+            TreeNode *node = que.front();
+            que.pop();
+            if (node->left != NULL) {
+                childToParent[node->left] = node;
+                que.push(node->left);
+            }
+            if (node->right != NULL) {
+                childToParent[node->right] = node;
+                que.push(node->right);
+            }
+        }
+    }
+    while (tmp.size() > 1) {
+        int size = tmp.size();
+        for (int i = 0; i < size; i++) {
+            TreeNode *node = tmp.front();
+            tmp.pop();
+            if (childToParent[node] != tmp.back()) {
+                tmp.push(childToParent[node]);
+            }
+        }
+    }
+    return tmp.front();
+}
+
 int main() {
     // cout << s << endl;
     /* vector<char> v1 = {'h', 'e', 'l', 'l', 'o'};
@@ -344,7 +468,7 @@ int main() {
 
     // cout << captureForts({1, 0, 0, -1, 0, 0, 0, 0, 1}) << endl;
 
-    cout << minNumber(vector{1, 2, 3, 9}, vector{4, 5}) << endl;
+    // cout << minNumber(vector{1, 2, 3, 9}, vector{4, 5}) << endl;
 
     return 0;
 }
