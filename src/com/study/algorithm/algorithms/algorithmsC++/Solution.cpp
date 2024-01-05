@@ -4,7 +4,9 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdlib>
+#include <cstring>
 #include <iostream>
+#include <iterator>
 #include <queue>
 #include <string>
 #include <type_traits>
@@ -22,6 +24,14 @@ struct TreeNode {
     TreeNode() : val(0), left(nullptr), right(nullptr) {}
     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+struct ListNode {
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
 // 反转字符串
@@ -1805,6 +1815,1356 @@ long long findTheArrayConcVal(vector<int> &nums) {
     return res;
 }
 
+//分类求和并作差
+/*给你两个正整数 n 和 m 。
+
+现定义两个整数 num1 和 num2 ，如下所示：
+
+num1：范围 [1, n] 内所有 无法被 m 整除 的整数之和。
+num2：范围 [1, n] 内所有 能够被 m 整除 的整数之和。
+返回整数 num1 - num2 。
+
+ 
+
+示例 1：
+
+输入：n = 10, m = 3
+输出：19
+解释：在这个示例中：
+- 范围 [1, 10] 内无法被 3 整除的整数为 [1,2,4,5,7,8,10] ，num1 = 这些整数之和 = 37 。
+- 范围 [1, 10] 内能够被 3 整除的整数为 [3,6,9] ，num2 = 这些整数之和 = 18 。
+返回 37 - 18 = 19 作为答案。
+示例 2：
+
+输入：n = 5, m = 6
+输出：15
+解释：在这个示例中：
+- 范围 [1, 5] 内无法被 6 整除的整数为 [1,2,3,4,5] ，num1 = 这些整数之和 =  15 。
+- 范围 [1, 5] 内能够被 6 整除的整数为 [] ，num2 = 这些整数之和 = 0 。
+返回 15 - 0 = 15 作为答案。
+示例 3：
+
+输入：n = 5, m = 1
+输出：-15
+解释：在这个示例中：
+- 范围 [1, 5] 内无法被 1 整除的整数为 [] ，num1 = 这些整数之和 = 0 。 
+- 范围 [1, 5] 内能够被 1 整除的整数为 [1,2,3,4,5] ，num2 = 这些整数之和 = 15 。
+返回 0 - 15 = -15 作为答案。
+ 
+
+提示：
+
+1 <= n, m <= 1000*/
+int differenceOfSums(int n, int m) {
+    //模拟
+    //按条件循环模拟
+    int res = 0;
+    for (int i = 1; i <= n; i++) {
+        if (i % m != 0) {
+            res += i;
+        } else {
+            res -= i;
+        }
+    }
+    for (int i = 1; i <= n; i++) {
+        if (i % m == 0) {
+        }
+    }
+    return res;
+
+    //数学
+    //根据等差数列求和公式
+    //只要求出总和sum，以及能被m整除的数sum1，即可得到num1-num2的值
+    return n * (n + 1) / 2 - n / m * (n / m + 1) * m;
+}
+
+//只出现一次的数字 III
+/*给你一个整数数组 nums，其中恰好有两个元素只出现一次，其余所有元素均出现两次。 找出只出现一次的那两个元素。你可以按 任意顺序 返回答案。
+
+你必须设计并实现线性时间复杂度的算法且仅使用常量额外空间来解决此问题。
+
+ 
+
+示例 1：
+
+输入：nums = [1,2,1,3,2,5]
+输出：[3,5]
+解释：[5, 3] 也是有效的答案。
+示例 2：
+
+输入：nums = [-1,0]
+输出：[-1,0]
+示例 3：
+
+输入：nums = [0,1]
+输出：[1,0]
+ 
+
+提示：
+
+2 <= nums.length <= 3 * 104
+-231 <= nums[i] <= 231 - 1
+除两个只出现一次的整数外，nums 中的其他数字都出现两次*/
+vector<int> singleNumber(vector<int> &nums) {
+    //哈希表
+    //用set保存元素
+    //遍历数组。如果set没有元素，则添加进集合中，如果set存在元素，则移除
+    //最后set剩余的两个元素就是只出现一次的两个元素
+    //因为题目要求只能使用常量的空间，所以此方法不可行（虽然通过了）。
+    unordered_set<int> set;
+    for (int n : nums) {
+        if (set.count(n) == 0) {
+            set.insert(n);
+        } else {
+            set.erase(n);
+        }
+    }
+    vector<int> res{set.begin(), set.end()};
+    return res;
+}
+
+//故障键盘
+/*你的笔记本键盘存在故障，每当你在上面输入字符 'i' 时，它会反转你所写的字符串。而输入其他字符则可以正常工作。
+
+给你一个下标从 0 开始的字符串 s ，请你用故障键盘依次输入每个字符。
+
+返回最终笔记本屏幕上输出的字符串。
+
+ 
+
+示例 1：
+
+输入：s = "string"
+输出："rtsng"
+解释：
+输入第 1 个字符后，屏幕上的文本是："s" 。
+输入第 2 个字符后，屏幕上的文本是："st" 。
+输入第 3 个字符后，屏幕上的文本是："str" 。
+因为第 4 个字符是 'i' ，屏幕上的文本被反转，变成 "rts" 。
+输入第 5 个字符后，屏幕上的文本是："rtsn" 。
+输入第 6 个字符后，屏幕上的文本是： "rtsng" 。
+因此，返回 "rtsng" 。
+示例 2：
+
+输入：s = "poiinter"
+输出："ponter"
+解释：
+输入第 1 个字符后，屏幕上的文本是："p" 。
+输入第 2 个字符后，屏幕上的文本是："po" 。
+因为第 3 个字符是 'i' ，屏幕上的文本被反转，变成 "op" 。
+因为第 4 个字符是 'i' ，屏幕上的文本被反转，变成 "po" 。
+输入第 5 个字符后，屏幕上的文本是："pon" 。
+输入第 6 个字符后，屏幕上的文本是："pont" 。
+输入第 7 个字符后，屏幕上的文本是："ponte" 。
+输入第 8 个字符后，屏幕上的文本是："ponter" 。
+因此，返回 "ponter" 。
+ 
+
+提示：
+
+1 <= s.length <= 100
+s 由小写英文字母组成
+s[0] != 'i'*/
+string finalString(string s) {
+    //模拟
+    //按题意遍历字符串
+    //当遇到字符'i'时，翻转字符串（reverse(res.begin(), res.end())函数）；否则拼接字符；
+    string res;
+    for (char c : s) {
+        if (c == 'i') {
+            reverse(res.begin(), res.end());
+        } else {
+            res += c;
+        }
+    }
+    return res;
+}
+
+//同积元组
+/*给你一个由 不同 正整数组成的数组 nums ，请你返回满足 a * b = c * d 的元组 (a, b, c, d) 的数量。其中 a、b、c 和 d 都是 nums 中的元素，且 a != b != c != d 。
+
+ 
+
+示例 1：
+
+输入：nums = [2,3,4,6]
+输出：8
+解释：存在 8 个满足题意的元组：
+(2,6,3,4) , (2,6,4,3) , (6,2,3,4) , (6,2,4,3)
+(3,4,2,6) , (4,3,2,6) , (3,4,6,2) , (4,3,6,2)
+示例 2：
+
+输入：nums = [1,2,4,5,10]
+输出：16
+解释：存在 16 个满足题意的元组：
+(1,10,2,5) , (1,10,5,2) , (10,1,2,5) , (10,1,5,2)
+(2,5,1,10) , (2,5,10,1) , (5,2,1,10) , (5,2,10,1)
+(2,10,4,5) , (2,10,5,4) , (10,2,4,5) , (10,2,5,4)
+(4,5,2,10) , (4,5,10,2) , (5,4,2,10) , (5,4,10,2)
+ 
+
+提示：
+
+1 <= nums.length <= 1000
+1 <= nums[i] <= 104
+nums 中的所有元素 互不相同*/
+int tupleSameProduct(vector<int> &nums) {
+    unordered_map<int, int> counter;
+
+    for (int i = 0; i < nums.size(); i++) {
+        for (int j = i + 1; j < nums.size(); j++) {
+            // counter[nums[i] * nums[j]] = counter[nums[i] * nums[j]] + 1;
+            counter[nums[i] * nums[j]]++;
+        }
+    }
+
+    int res = 0;
+    for (auto &entry : counter) {
+        if (entry.second > 1) {
+            res += ((entry.second - 1) * entry.second / 2) * 8;
+        }
+    }
+
+    /* for (auto &[k, v] : counter) {
+        res += v * (v - 1) * 4;
+    } */
+
+    return res;
+}
+
+//根据规则将箱子分类
+/*给你四个整数 length ，width ，height 和 mass ，分别表示一个箱子的三个维度和质量，请你返回一个表示箱子 类别 的字符串。
+
+如果满足以下条件，那么箱子是 "Bulky" 的：
+箱子 至少有一个 维度大于等于 104 。
+或者箱子的 体积 大于等于 109 。
+如果箱子的质量大于等于 100 ，那么箱子是 "Heavy" 的。
+如果箱子同时是 "Bulky" 和 "Heavy" ，那么返回类别为 "Both" 。
+如果箱子既不是 "Bulky" ，也不是 "Heavy" ，那么返回类别为 "Neither" 。
+如果箱子是 "Bulky" 但不是 "Heavy" ，那么返回类别为 "Bulky" 。
+如果箱子是 "Heavy" 但不是 "Bulky" ，那么返回类别为 "Heavy" 。
+注意，箱子的体积等于箱子的长度、宽度和高度的乘积。
+
+ 
+
+示例 1：
+
+输入：length = 1000, width = 35, height = 700, mass = 300
+输出："Heavy"
+解释：
+箱子没有任何维度大于等于 104 。
+体积为 24500000 <= 109 。所以不能归类为 "Bulky" 。
+但是质量 >= 100 ，所以箱子是 "Heavy" 的。
+由于箱子不是 "Bulky" 但是是 "Heavy" ，所以我们返回 "Heavy" 。
+示例 2：
+
+输入：length = 200, width = 50, height = 800, mass = 50
+输出："Neither"
+解释：
+箱子没有任何维度大于等于 104 。
+体积为 8 * 106 <= 109 。所以不能归类为 "Bulky" 。
+质量小于 100 ，所以不能归类为 "Heavy" 。
+由于不属于上述两者任何一类，所以我们返回 "Neither" 。
+ 
+
+提示：
+
+1 <= length, width, height <= 105
+1 <= mass <= 103*/
+string categorizeBox(int length, int width, int height, int mass) {
+    //模拟
+    //先计算出体积V,再按题意判断箱子是否Bulky以及是否Heavy
+    //最后再根据是否Bulky以及是否Heavy给出结论
+    long long v = (long long)length * width * height;
+    // long long v = 1L * length * width * height;
+    bool isBulky = false, isHeavy = false;
+
+    if (length >= 10000 || width >= 10000 || height >= 10000 || v >= 1000000000) {
+        isBulky = true;
+    }
+    if (mass >= 100) {
+        isHeavy = true;
+    }
+
+    if (isBulky && isHeavy) {
+        return "Both";
+    }
+
+    if (isBulky) {
+        return "Bulky";
+    }
+
+    if (isHeavy) {
+        return "Heavy";
+    }
+
+    return "Neither";
+}
+
+//转换数字的最少位翻转次数
+/*一次 位翻转 定义为将数字 x 二进制中的一个位进行 翻转 操作，即将 0 变成 1 ，或者将 1 变成 0 。
+
+比方说，x = 7 ，二进制表示为 111 ，我们可以选择任意一个位（包含没有显示的前导 0 ）并进行翻转。比方说我们可以翻转最右边一位得到 110 ，或者翻转右边起第二位得到 101 ，或者翻转右边起第五位（这一位是前导 0 ）得到 10111 等等。
+给你两个整数 start 和 goal ，请你返回将 start 转变成 goal 的 最少位翻转 次数。
+
+ 
+
+示例 1：
+
+输入：start = 10, goal = 7
+输出：3
+解释：10 和 7 的二进制表示分别为 1010 和 0111 。我们可以通过 3 步将 10 转变成 7 ：
+- 翻转右边起第一位得到：1010 -> 1011 。
+- 翻转右边起第三位：1011 -> 1111 。
+- 翻转右边起第四位：1111 -> 0111 。
+我们无法在 3 步内将 10 转变成 7 。所以我们返回 3 。
+示例 2：
+
+输入：start = 3, goal = 4
+输出：3
+解释：3 和 4 的二进制表示分别为 011 和 100 。我们可以通过 3 步将 3 转变成 4 ：
+- 翻转右边起第一位：011 -> 010 。
+- 翻转右边起第二位：010 -> 000 。
+- 翻转右边起第三位：000 -> 100 。
+我们无法在 3 步内将 3 变成 4 。所以我们返回 3 。
+ 
+
+提示：
+
+0 <= start, goal <= 109*/
+int minBitFlips(int start, int goal) {
+    //位运算
+    //转换次数，其实就是两个数中不同位的个数
+    //那么可以先对两个数进行按位异或运算，统计结果中‘1’的个数就是不同位的个数
+    int bit = start ^ goal;
+    int count = 0;
+    while (bit) {
+        count++;
+        bit &= (bit - 1);
+    }
+    return count;
+}
+
+//掷骰子等于目标和的方法数
+/*这里有 n 个一样的骰子，每个骰子上都有 k 个面，分别标号为 1 到 k 。
+
+给定三个整数 n ,  k 和 target ，返回可能的方式(从总共 kn 种方式中)滚动骰子的数量，使正面朝上的数字之和等于 target 。
+
+答案可能很大，你需要对 109 + 7 取模 。
+
+ 
+
+示例 1：
+
+输入：n = 1, k = 6, target = 3
+输出：1
+解释：你扔一个有 6 个面的骰子。
+得到 3 的和只有一种方法。
+示例 2：
+
+输入：n = 2, k = 6, target = 7
+输出：6
+解释：你扔两个骰子，每个骰子有 6 个面。
+得到 7 的和有 6 种方法：1+6 2+5 3+4 4+3 5+2 6+1。
+示例 3：
+
+输入：n = 30, k = 30, target = 500
+输出：222616187
+解释：返回的结果必须是对 109 + 7 取模。
+ 
+
+提示：
+
+1 <= n, k <= 30
+1 <= target <= 1000*/
+int numRollsToTarget(int n, int k, int target) {
+    //动态规划
+    //设dp[n][t]：用n个骰子，投出数字之和为t的次数
+    //dp[n][t]=sum(dp[n-1](t-1)+dp[n-1](t-2)+...+dp[n-1](t-k))(t-k>0)
+    //由此，我们也可以发现，dp[n]只跟dp[n-1]即上一行的数据有关，那么可以使用滚动数组的思想，用一个一维数组来表示
+    //又因为dp[n][t]是根据上一行中从dp[n-1](t-1)开始累加前面元素的值，那么我们在此遍历时使用倒叙的方式，使得先遍历并更改的值不会对后续遍历的值产生影响，可以省略创建临时数组的过程
+    //1.首先，初始化dp，dp[1...min(k, target)]=1。也就是只有一个骰子时，最多只能投出t=min(k, target)，次数自然也是1.
+    //2.1.根据n，对每一次增加骰子进行遍历
+    //2.2.每一行中，倒叙计算每个dp[t]的值
+    //2.3.dp[t]=sum(dp[t-1]+dp[t-2]+...+dp[t-k])(t-k>0)
+    //3.计算sum时注意对结果按1000000007取模
+    //4.更新dp[t]的值，并且注意，dp[1...t-k]=0,因为必须需要n个骰子，每个骰子最少是1，那么小于n的值必然是0，所以在每一行的遍历中，从target倒叙遍历，最小值也就是n。
+    if (n * k < target) {
+        return 0;
+    }
+    int dp[target + 1];
+    for (int i = 1, l = min(k, target); i <= l; i++) {
+        dp[i] = 1;
+    }
+    for (int i = min(k, target) + 1; i <= target; i++) {
+        dp[i] = 0;
+    }
+    for (int i = 2; i <= n; i++) {
+        for (int j = target; j >= i; j--) {
+            int sum = 0;
+            for (int c = 1, l = min(k, j - 1); c <= l; c++) {
+                sum = (sum + dp[j - c]) % 1000000007;
+            }
+            dp[j] = sum;
+        }
+        for (int f = 1; f < i; f++) {
+            dp[f] = 0;
+        }
+    }
+    return dp[target];
+}
+
+//求一个整数的惩罚数
+/*给你一个正整数 n ，请你返回 n 的 惩罚数 。
+
+n 的 惩罚数 定义为所有满足以下条件 i 的数的平方和：
+
+1 <= i <= n
+i * i 的十进制表示的字符串可以分割成若干连续子字符串，且这些子字符串对应的整数值之和等于 i 。
+ 
+
+示例 1：
+
+输入：n = 10
+输出：182
+解释：总共有 3 个整数 i 满足要求：
+- 1 ，因为 1 * 1 = 1
+- 9 ，因为 9 * 9 = 81 ，且 81 可以分割成 8 + 1 。
+- 10 ，因为 10 * 10 = 100 ，且 100 可以分割成 10 + 0 。
+因此，10 的惩罚数为 1 + 81 + 100 = 182
+示例 2：
+
+输入：n = 37
+输出：1478
+解释：总共有 4 个整数 i 满足要求：
+- 1 ，因为 1 * 1 = 1
+- 9 ，因为 9 * 9 = 81 ，且 81 可以分割成 8 + 1 。
+- 10 ，因为 10 * 10 = 100 ，且 100 可以分割成 10 + 0 。
+- 36 ，因为 36 * 36 = 1296 ，且 1296 可以分割成 1 + 29 + 6 。
+因此，37 的惩罚数为 1 + 81 + 100 + 1296 = 1478
+
+提示：
+
+1 <= n <= 1000*/
+bool backTrackCheckPunish(string sum, string now, int leftPower, int i) {
+    //回溯
+    //从i*i的最右边开始
+    //取出下一个字符left
+    //1.下一个字符left单独计算，那么此时sum=sum+now（注意这里是字符串，需要先转换成int）
+    //2.下一个字符left加入now中，now = left + now
+    if (leftPower == 0) {
+        //如果leftPower == 0，说明遍历到头，将sum和now相加（注意这里是字符串，需要先转换成int），判断是否等于i
+        return (sum == "" ? 0 : stoi(sum)) + (now == "" ? 0 : stoi(now)) == i;
+    }
+    string left = to_string(leftPower % 10);
+    int nextPower = leftPower / 10;
+    if (backTrackCheckPunish(to_string((sum == "" ? 0 : stoi(sum)) + (now == "" ? 0 : stoi(now))), left, nextPower, i)) {
+        return true;
+    }
+    now = left + now;
+    return backTrackCheckPunish(sum, now, nextPower, i);
+}
+
+int punishmentNumber(int n) {
+    //回溯
+    //按题意，遍历1~n
+    //计算power=i*i
+    //用回溯分割power，并判断分割后的子串相加是否等于i
+    int res = 0;
+    for (int i = 1; i <= n; i++) {
+        int power = i * i;
+        if (backTrackCheckPunish("", "", power, i)) {
+            res += power;
+        }
+    }
+    return res;
+}
+
+//最大二进制奇数
+/*给你一个 二进制 字符串 s ，其中至少包含一个 '1' 。
+
+你必须按某种方式 重新排列 字符串中的位，使得到的二进制数字是可以由该组合生成的 最大二进制奇数 。
+
+以字符串形式，表示并返回可以由给定组合生成的最大二进制奇数。
+
+注意 返回的结果字符串 可以 含前导零。
+
+ 
+
+示例 1：
+
+输入：s = "010"
+输出："001"
+解释：因为字符串 s 中仅有一个 '1' ，其必须出现在最后一位上。所以答案是 "001" 。
+示例 2：
+
+输入：s = "0101"
+输出："1001"
+解释：其中一个 '1' 必须出现在最后一位上。而由剩下的数字可以生产的最大数字是 "100" 。所以答案是 "1001" 。
+ 
+
+提示：
+
+1 <= s.length <= 100
+s 仅由 '0' 和 '1' 组成
+s 中至少包含一个 '1'*/
+string maximumOddBinaryNumber(string s) {
+    //贪心
+    //统计字符串中‘1’的个数cnt1，再将cnt1-1个'1'放入结果字符串头部，中间插入(s.size-cnt1)个字符'0'，并再最后结尾再加入一个字符'1'
+    int cnt1 = count(s.begin(), s.end(), '1');
+    int count = -1;
+    for (char c : s) {
+        if (c == '1') {
+            count++;
+        }
+    }
+    string res;
+    for (int i = 0; i < count; i++) {
+        res += '1';
+    }
+    for (int i = 1, l = s.size() - count; i < l; i++) {
+        res += '0';
+    }
+    res += '1';
+    return res;
+
+    //作者：灵茶山艾府
+    //链接：https://leetcode.cn/problems/maximum-odd-binary-number/
+    //来源：力扣（LeetCode）
+    //著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    //创建一个包含n个元素的string对象，其中每个元素都被初始化为字符c
+    // return string(cnt1 - 1, '1') + string(s.length() - cnt1, '0') + '1';
+}
+
+//从数量最多的堆取走礼物
+/*给你一个整数数组 gifts ，表示各堆礼物的数量。每一秒，你需要执行以下操作：
+
+选择礼物数量最多的那一堆。
+如果不止一堆都符合礼物数量最多，从中选择任一堆即可。
+选中的那一堆留下平方根数量的礼物（向下取整），取走其他的礼物。
+返回在 k 秒后剩下的礼物数量。
+
+ 
+
+示例 1：
+
+输入：gifts = [25,64,9,4,100], k = 4
+输出：29
+解释： 
+按下述方式取走礼物：
+- 在第一秒，选中最后一堆，剩下 10 个礼物。
+- 接着第二秒选中第二堆礼物，剩下 8 个礼物。
+- 然后选中第一堆礼物，剩下 5 个礼物。
+- 最后，再次选中最后一堆礼物，剩下 3 个礼物。
+最后剩下的礼物数量分别是 [5,8,9,4,3] ，所以，剩下礼物的总数量是 29 。
+示例 2：
+
+输入：gifts = [1,1,1,1], k = 4
+输出：4
+解释：
+在本例中，不管选中哪一堆礼物，都必须剩下 1 个礼物。 
+也就是说，你无法获取任一堆中的礼物。 
+所以，剩下礼物的总数量是 4 。
+ 
+
+提示：
+
+1 <= gifts.length <= 103
+1 <= gifts[i] <= 109
+1 <= k <= 103*/
+long long pickGifts(vector<int> &&gifts, int k) {
+    //优先队列
+    //将gifts加入优先队列中
+    //每次，获取队列中最多的一组礼物gift，并只留下sqrt(gift)数量的礼物，重新加入gifts中
+    //k次之后，将剩余的礼物数量相加并返回
+    priority_queue<int> queue;
+    for (int g : gifts) {
+        queue.push(g);
+    }
+    for (int i = 0; i < k; i++) {
+        int top = sqrt(queue.top());
+        queue.pop();
+        queue.push(top);
+    }
+    long long res = 0;
+    while (!queue.empty()) {
+        res += queue.top();
+        queue.pop();
+    }
+    return res;
+}
+
+//链表的中间结点
+/*给你单链表的头结点 head ，请你找出并返回链表的中间结点。
+
+如果有两个中间结点，则返回第二个中间结点。
+
+ 
+
+示例 1：
+
+
+输入：head = [1,2,3,4,5]
+输出：[3,4,5]
+解释：链表只有一个中间结点，值为 3 。
+示例 2：
+
+
+输入：head = [1,2,3,4,5,6]
+输出：[4,5,6]
+解释：该链表有两个中间结点，值分别为 3 和 4 ，返回第二个结点。
+ 
+
+提示：
+
+链表的结点数范围是 [1, 100]
+1 <= Node.val <= 100*/
+ListNode *middleNode(ListNode *head) {
+    //方法一：两趟遍历
+    //1.第一趟遍历，计算链表长度
+    //2.第二趟遍历，根据长度，计算并获得链表的中间节点
+
+    //方法二：一趟遍历，快慢指针
+    //使用快慢指针可以很快的找到链表的中间节点
+    //维护一个快指针，和一个慢指针，初始时都指向头节点
+    //遍历时，快指针每次向后移动两个位置，慢指针每次移动一次位置
+    //当快指针遍历到尾节点或者尾节点的下一个节点为空时，结束遍历，此时慢指针指向的就是整个链表的中间节点
+    ListNode *slow = head;
+    ListNode *quick = head;
+    while (quick && quick->next) {
+        quick = quick->next->next;
+        slow = slow->next;
+    }
+    return slow;
+}
+
+//有序三元组中的最大值 I
+/*给你一个下标从 0 开始的整数数组 nums 。
+
+请你从所有满足 i < j < k 的下标三元组 (i, j, k) 中，找出并返回下标三元组的最大值。如果所有满足条件的三元组的值都是负数，则返回 0 。
+
+下标三元组 (i, j, k) 的值等于 (nums[i] - nums[j]) * nums[k] 。
+
+ 
+
+示例 1：
+
+输入：nums = [12,6,1,2,7]
+输出：77
+解释：下标三元组 (0, 2, 4) 的值是 (nums[0] - nums[2]) * nums[4] = 77 。
+可以证明不存在值大于 77 的有序下标三元组。
+示例 2：
+
+输入：nums = [1,10,3,4,19]
+输出：133
+解释：下标三元组 (1, 2, 4) 的值是 (nums[1] - nums[2]) * nums[4] = 133 。
+可以证明不存在值大于 133 的有序下标三元组。 
+示例 3：
+
+输入：nums = [1,2,3]
+输出：0
+解释：唯一的下标三元组 (0, 1, 2) 的值是一个负数，(nums[0] - nums[1]) * nums[2] = -3 。因此，答案是 0 。
+ 
+
+提示：
+
+3 <= nums.length <= 100
+1 <= nums[i] <= 106*/
+long long maximumTripletValue(vector<int> &nums) {
+    //枚举
+    //三层遍历，每层遍历获取ijk
+    //实时维护最大值
+    long long res = 0;
+    for (int i = 0; i < nums.size(); i++) {
+        for (int j = i + 1; j < nums.size(); j++) {
+            for (int k = j + 1; k < nums.size(); k++) {
+                res = max(res, (long long)(nums[i] - nums[j]) * nums[k]);
+            }
+        }
+    }
+    return res;
+
+    //枚举优化
+    //https://leetcode.cn/problems/maximum-value-of-an-ordered-triplet-i/solutions/2465301/yi-ti-san-jie-mei-ju-qian-hou-zhui-fen-j-eh26/
+}
+
+//环和杆
+/*总计有 n 个环，环的颜色可以是红、绿、蓝中的一种。这些环分别穿在 10 根编号为 0 到 9 的杆上。
+
+给你一个长度为 2n 的字符串 rings ，表示这 n 个环在杆上的分布。rings 中每两个字符形成一个 颜色位置对 ，用于描述每个环：
+
+第 i 对中的 第一个 字符表示第 i 个环的 颜色（'R'、'G'、'B'）。
+第 i 对中的 第二个 字符表示第 i 个环的 位置，也就是位于哪根杆上（'0' 到 '9'）。
+例如，"R3G2B1" 表示：共有 n == 3 个环，红色的环在编号为 3 的杆上，绿色的环在编号为 2 的杆上，蓝色的环在编号为 1 的杆上。
+
+找出所有集齐 全部三种颜色 环的杆，并返回这种杆的数量。
+
+ 
+
+示例 1：
+
+
+输入：rings = "B0B6G0R6R0R6G9"
+输出：1
+解释：
+- 编号 0 的杆上有 3 个环，集齐全部颜色：红、绿、蓝。
+- 编号 6 的杆上有 3 个环，但只有红、蓝两种颜色。
+- 编号 9 的杆上只有 1 个绿色环。
+因此，集齐全部三种颜色环的杆的数目为 1 。
+示例 2：
+
+
+输入：rings = "B0R0G0R9R0B0G0"
+输出：1
+解释：
+- 编号 0 的杆上有 6 个环，集齐全部颜色：红、绿、蓝。
+- 编号 9 的杆上只有 1 个红色环。
+因此，集齐全部三种颜色环的杆的数目为 1 。
+示例 3：
+
+输入：rings = "G4"
+输出：0
+解释：
+只给了一个环，因此，不存在集齐全部三种颜色环的杆。
+ 
+
+提示：
+
+rings.length == 2 * n
+1 <= n <= 100
+如 i 是 偶数 ，则 rings[i] 的值可以取 'R'、'G' 或 'B'（下标从 0 开始计数）
+如 i 是 奇数 ，则 rings[i] 的值可以取 '0' 到 '9' 中的一个数字（下标从 0 开始计数）*/
+int countPoints(string rings) {
+    //哈希表，状态压缩，位运算
+    //对于每个杆子，我们可以使用一个集合来记录其上是否套有不同颜色的环
+    //因为只有3种环，所以可以对状态进行压缩，使用1代表红色，2代表绿色，4代表蓝色，那么就可以使用一个int值来表示这3种状态
+    //遍历数组，当遇到不同颜色时，将当前颜色对应的标志与对应的杆子的int值进行按位或运算，将标志加入杆子中
+    //遍历杆子数组，当其值等于7时，说明这根杆子上有所有颜色的环，结果+1
+    vector<int> flags(10);
+    for (int i = 0; i < rings.size(); i += 2) {
+        int flag = 0;
+        switch (rings[i]) {
+            case 'R':
+                flag = 0b1;
+                break;
+            case 'G':
+                flag = 0b10;
+                break;
+            case 'B':
+                flag = 0b100;
+                break;
+        }
+        flags[rings[i + 1] - '0'] |= flag;
+    }
+
+    int res = 0;
+    for (int flag : flags) {
+        if (flag == 0b111) {
+            res++;
+        }
+    }
+
+    return res;
+}
+
+//数组中两个数的最大异或值
+/*给你一个整数数组 nums ，返回 nums[i] XOR nums[j] 的最大运算结果，其中 0 ≤ i ≤ j < n 。
+
+ 
+
+示例 1：
+
+输入：nums = [3,10,5,25,2,8]
+输出：28
+解释：最大运算结果是 5 XOR 25 = 28.
+示例 2：
+
+输入：nums = [14,70,53,83,49,91,36,80,92,51,66,70]
+输出：127
+ 
+
+提示：
+
+1 <= nums.length <= 2 * 105
+0 <= nums[i] <= 231 - 1*/
+class BinaryTrie {
+    public:
+    BinaryTrie *childOne = nullptr;
+    BinaryTrie *childZero = nullptr;
+};
+void createBinaryTrie(BinaryTrie *root, int num) {
+    int flag = 1 << 30;
+    while (flag) {
+        if (num & flag) {
+            if (!root->childOne) {
+                root->childOne = new BinaryTrie;
+            }
+            root = root->childOne;
+        } else {
+            if (!root->childZero) {
+                root->childZero = new BinaryTrie;
+            }
+            root = root->childZero;
+        }
+        flag >>= 1;
+    }
+}
+int checkXorByBinaryTrie(BinaryTrie *root, int num) {
+    int flag = 1 << 30;
+    while (flag) {
+        if (num & flag) {
+            if (root->childZero) {
+                root = root->childZero;
+            } else {
+                num &= ~flag;
+                root = root->childOne;
+            }
+
+        } else {
+            if (root->childOne) {
+                num |= flag;
+                root = root->childOne;
+            } else {
+                root = root->childZero;
+            }
+        }
+        flag >>= 1;
+    }
+    return num;
+}
+int findMaximumXORByTrie(vector<int> &&nums) {
+    //哈希表，字典树
+    //因为一个数字的一个位只有0和1两种状态，那么，使用一个字典树，每棵树表示数字其中一位
+    //从最高位1<<30开始，对每个元素构建字典树
+    //当前位如果位0，则构入childZero，并将当前父节点设为childZero
+    //当前位如果位1，则构入childOne，并将当前父节点设为childOne
+    //也就是从最高位1<<30开始，判断每个数字的每一位存在于字典树对应的哪个子树位上
+    //当所有元素遍历结束后，一颗字典树构建完成，代表，所有数字的每一位
+    //再遍历元素，从最高位1<<30开始：
+    //1.如果元素当前位为0，那么需要对应位为1，异或后就能成为更大的1，如果字典树中当前位没有1的子树，那么只能选择0，选择对应的子树后继续下一位计算；
+    //2.如果元素当前位为1，那么需要对应位为0，异或后就能成为更大的1，如果字典树中当前位没有0的子树，那么只能选择1，并且对应位应置0，选择对应的子树后继续下一位计算；
+    //遍历时更新最大值，并在最后返回
+    int res = 0;
+
+    BinaryTrie *root = new BinaryTrie;
+    for (int n : nums) {
+        createBinaryTrie(root, n);
+    }
+
+    unordered_set<int> map;
+    for (int n : nums) {
+        if (map.find(n) == map.end()) {
+            res = max(res, checkXorByBinaryTrie(root, n));
+            map.insert(n);
+        }
+    }
+
+    return res;
+}
+int findMaximumXOR(vector<int> &&nums) {
+    //哈希表（超时）
+    //两层循环，找出最大异或值
+    //并用哈希表记录已遍历的元素
+    unordered_map<int, int> maximum;
+    int res = 0;
+
+    for (int i = 0; i < nums.size(); i++) {
+        if (maximum[nums[i]]) {
+            continue;
+        }
+        for (int j = i + 1; j < nums.size(); j++) {
+            maximum[nums[i]] = max(maximum[nums[i]], nums[i] ^ nums[j]);
+        }
+        res = max(res, maximum[nums[i]]);
+    }
+
+    return res;
+}
+
+//最长平衡子字符串
+/*给你一个仅由 0 和 1 组成的二进制字符串 s 。  
+
+如果子字符串中 所有的 0 都在 1 之前 且其中 0 的数量等于 1 的数量，则认为 s 的这个子字符串是平衡子字符串。请注意，空子字符串也视作平衡子字符串。 
+
+返回  s 中最长的平衡子字符串长度。
+
+子字符串是字符串中的一个连续字符序列。
+
+ 
+
+示例 1：
+
+输入：s = "01000111"
+输出：6
+解释：最长的平衡子字符串是 "000111" ，长度为 6 。
+示例 2：
+
+输入：s = "00111"
+输出：4
+解释：最长的平衡子字符串是 "0011" ，长度为  4 。
+示例 3：
+
+输入：s = "111"
+输出：0
+解释：除了空子字符串之外不存在其他平衡子字符串，所以答案为 0 。
+ 
+
+提示：
+
+1 <= s.length <= 50
+'0' <= s[i] <= '1'*/
+int findTheLongestBalancedSubstring(string s) {
+    //计数，状态机
+    //遍历字符串，统计连续0出现的次数zeroCount，连续1出现的次数oneCount
+    //当再次遇到'0'时，判断并记录最长平衡子字符串的数量max(res, min(zeroCount, oneCount))
+    //这里用两个状态STATE_ZERO和STATE_ONE表示，当前字符串遍历是出于哪一种状态中，以此来判断下一个遇到的字符是'0'或'1'时需要如何处理统计次数。
+    int zeroCount = 0, oneCount = 0, res = 0;
+    const int STATE_ZERO = 0, STATE_ONE = 1;
+    int state = STATE_ONE;
+
+    for (char c : s) {
+        switch (state) {
+            case STATE_ZERO:
+                if (c == '0') {
+                    zeroCount++;
+                } else {
+                    state = STATE_ONE;
+                    oneCount++;
+                }
+                break;
+            case STATE_ONE:
+                if (c == '0') {
+                    res = max(res, min(zeroCount, oneCount));
+                    zeroCount = 1;
+                    oneCount = 0;
+                    state = STATE_ZERO;
+                } else {
+                    oneCount++;
+                }
+                break;
+        }
+    }
+
+    return max(res, min(zeroCount, oneCount)) * 2;
+}
+
+//按摩师
+/*一个有名的按摩师会收到源源不断的预约请求，每个预约都可以选择接或不接。在每次预约服务之间要有休息时间，因此她不能接受相邻的预约。给定一个预约请求序列，替按摩师找到最优的预约集合（总预约时间最长），返回总的分钟数。
+
+注意：本题相对原题稍作改动
+
+ 
+
+示例 1：
+
+输入： [1,2,3,1]
+输出： 4
+解释： 选择 1 号预约和 3 号预约，总时长 = 1 + 3 = 4。
+示例 2：
+
+输入： [2,7,9,3,1]
+输出： 12
+解释： 选择 1 号预约、 3 号预约和 5 号预约，总时长 = 2 + 9 + 1 = 12。
+示例 3：
+
+输入： [2,1,4,5,3,1,1,3]
+输出： 12
+解释： 选择 1 号预约、 3 号预约、 5 号预约和 8 号预约，总时长 = 2 + 4 + 3 + 3 = 12。*/
+int massage(vector<int> &nums) {
+    //动态规划
+    //设dp[i][0]表示以下标i为结尾时，选中下标出的元素时可获得的最大分钟数
+    //设dp[i][1]表示以下标i为结尾时，不选中下标出的元素时可获得的最大分钟数
+    //那么最后答案就为max(dp[size-1][0],dp[siez-1][1])
+    //dp[i][0]=dp[i-1][1]+nums[i]：因为相邻元素不能同时选中，所以这表示上一个下标未选中时的最大分钟数加上当前下标的分钟数
+    //dp[i][1]=max(dp[i-1][0],dp[i-1][1])：当前下标的元素不选择，那么上一个元素可以选择也可以不选择，所以就为其中的最大值
+    int choosed = 0;
+    int unchoosed = 0;
+
+    for (int n : nums) {
+        int tmp = unchoosed;
+        unchoosed = max(choosed, unchoosed);
+        choosed = tmp + n;
+    }
+
+    return max(choosed, unchoosed);
+}
+
+//BiNode
+/*二叉树数据结构TreeNode可用来表示单向链表（其中left置空，right为下一个链表节点）。实现一个方法，把二叉搜索树转换为单向链表，要求依然符合二叉搜索树的性质，转换操作应是原址的，也就是在原始的二叉搜索树上直接修改。
+
+返回转换后的单向链表的头节点。
+
+注意：本题相对原题稍作改动
+
+ 
+
+示例：
+
+输入： [4,2,5,1,3,null,6,0]
+输出： [0,null,1,null,2,null,3,null,4,null,5,null,6]
+提示：
+
+节点数量不会超过 100000。*/
+void convertBiNodeDFS(TreeNode *root, vector<TreeNode *> &list) {
+    if (root) {
+        convertBiNodeDFS(root->left, list);
+        root->left = nullptr;
+        list.push_back(root);
+        convertBiNodeDFS(root->right, list);
+        root->right = nullptr;
+    }
+}
+TreeNode *convertBiNode(TreeNode *root) {
+    //深度优先搜索
+    //因为是二叉搜索树，所以树左边节点比根节点小，右边节点比根节点大
+    //那么用中序遍历，即可得到从小到大的值
+    //用一个list保存树节点从小到大的值
+    //并再最后按从小到大依次拼接在每个子树的右节点上即可
+    if (!root) {
+        return nullptr;
+    }
+    vector<TreeNode *> list;
+    convertBiNodeDFS(root, list);
+    for (int i = 0; i < list.size() - 1; i++) {
+        list[i]->right = list[i + 1];
+    }
+    return list[0];
+}
+
+//卡牌分组
+/*给定一副牌，每张牌上都写着一个整数。
+
+此时，你需要选定一个数字 X，使我们可以将整副牌按下述规则分成 1 组或更多组：
+
+每组都有 X 张牌。
+组内所有的牌上都写着相同的整数。
+仅当你可选的 X >= 2 时返回 true。
+
+ 
+
+示例 1：
+
+输入：deck = [1,2,3,4,4,3,2,1]
+输出：true
+解释：可行的分组是 [1,1]，[2,2]，[3,3]，[4,4]
+示例 2：
+
+输入：deck = [1,1,1,2,2,2,3,3]
+输出：false
+解释：没有满足要求的分组。
+
+提示：
+
+1 <= deck.length <= 104
+0 <= deck[i] < 104*/
+bool hasGroupsSizeX(vector<int> &deck) {
+    //最大公约数（暴力解法）
+    //先用哈希表统计每个数出现的频次
+    //再寻找计算所有数的最大公约数，如果最大公约数大于等于2，说明可以分组，否则不能
+    //优化：可以用辗转相除法求最大公约数。
+    unordered_map<int, int> map;
+    for (int n : deck) {
+        map[n]++;
+    }
+    int minCount = deck.size();
+    for (auto entry : map) {
+        minCount = min(minCount, entry.second);
+    }
+
+    for (int i = 2; i <= minCount; i++) {
+        bool flag = true;
+        for (auto entry : map) {
+            if (entry.second % i != 0) {
+                flag = false;
+            }
+        }
+        if (flag) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//可以被一步捕获的棋子数
+/*在一个 8 x 8 的棋盘上，有一个白色的车（Rook），用字符 'R' 表示。棋盘上还可能存在空方块，白色的象（Bishop）以及黑色的卒（pawn），分别用字符 '.'，'B' 和 'p' 表示。不难看出，大写字符表示的是白棋，小写字符表示的是黑棋。
+
+车按国际象棋中的规则移动。东，西，南，北四个基本方向任选其一，然后一直向选定的方向移动，直到满足下列四个条件之一：
+
+棋手选择主动停下来。
+棋子因到达棋盘的边缘而停下。
+棋子移动到某一方格来捕获位于该方格上敌方（黑色）的卒，停在该方格内。
+车不能进入/越过已经放有其他友方棋子（白色的象）的方格，停在友方棋子前。
+你现在可以控制车移动一次，请你统计有多少敌方的卒处于你的捕获范围内（即，可以被一步捕获的棋子数）。
+
+ 
+
+示例 1：
+
+
+
+输入：[[".",".",".",".",".",".",".","."],[".",".",".","p",".",".",".","."],[".",".",".","R",".",".",".","p"],[".",".",".",".",".",".",".","."],[".",".",".",".",".",".",".","."],[".",".",".","p",".",".",".","."],[".",".",".",".",".",".",".","."],[".",".",".",".",".",".",".","."]]
+输出：3
+解释：
+在本例中，车能够捕获所有的卒。
+示例 2：
+
+
+
+输入：[[".",".",".",".",".",".",".","."],[".","p","p","p","p","p",".","."],[".","p","p","B","p","p",".","."],[".","p","B","R","B","p",".","."],[".","p","p","B","p","p",".","."],[".","p","p","p","p","p",".","."],[".",".",".",".",".",".",".","."],[".",".",".",".",".",".",".","."]]
+输出：0
+解释：
+象阻止了车捕获任何卒。
+示例 3：
+
+
+
+输入：[[".",".",".",".",".",".",".","."],[".",".",".","p",".",".",".","."],[".",".",".","p",".",".",".","."],["p","p",".","R",".","p","B","."],[".",".",".",".",".",".",".","."],[".",".",".","B",".",".",".","."],[".",".",".","p",".",".",".","."],[".",".",".",".",".",".",".","."]]
+输出：3
+解释： 
+车可以捕获位置 b5，d6 和 f5 的卒。
+ 
+
+提示：
+
+board.length == board[i].length == 8
+board[i][j] 可以是 'R'，'.'，'B' 或 'p'
+只有一个格子上存在 board[i][j] == 'R'*/
+int numRookCaptures(vector<vector<char>> &board) {
+    //模拟，遍历
+    //遍历二维字符串数组
+    //当遇到车'R'时，再对其下标的四个方向进行延申遍历
+    //如果遇到黑卒p，则结果+1，并退出循环；如果遇到白象B，则直接退出循环
+    int res = 0;
+    for (int r = 0; r < board.size(); r++) {
+        for (int c = 0; c < board[0].size(); c++) {
+            if (board[r][c] == 'R') {
+                for (int i = c - 1; i >= 0; i--) {
+                    if (board[r][i] == 'p') {
+                        res++;
+                        break;
+                    }
+                    if (board[r][i] == 'B') {
+                        break;
+                    }
+                }
+                for (int i = r - 1; i >= 0; i--) {
+                    if (board[i][c] == 'p') {
+                        res++;
+                        break;
+                    }
+                    if (board[i][c] == 'B') {
+                        break;
+                    }
+                }
+                for (int i = c + 1; i < board[0].size(); i++) {
+                    if (board[r][i] == 'p') {
+                        res++;
+                        break;
+                    }
+                    if (board[r][i] == 'B') {
+                        break;
+                    }
+                }
+                for (int i = r + 1; i < board.size(); i++) {
+                    if (board[i][c] == 'p') {
+                        res++;
+                        break;
+                    }
+                    if (board[i][c] == 'B') {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return res;
+}
+
+//三维形体的表面积
+/*给你一个 n * n 的网格 grid ，上面放置着一些 1 x 1 x 1 的正方体。每个值 v = grid[i][j] 表示 v 个正方体叠放在对应单元格 (i, j) 上。
+
+放置好正方体后，任何直接相邻的正方体都会互相粘在一起，形成一些不规则的三维形体。
+
+请你返回最终这些形体的总表面积。
+
+注意：每个形体的底面也需要计入表面积中。
+
+ 
+
+示例 1：
+
+
+输入：grid = [[1,2],[3,4]]
+输出：34
+示例 2：
+
+
+输入：grid = [[1,1,1],[1,0,1],[1,1,1]]
+输出：32
+示例 3：
+
+
+输入：grid = [[2,2,2],[2,1,2],[2,2,2]]
+输出：46
+ 
+
+提示：
+
+n == grid.length
+n == grid[i].length
+1 <= n <= 50
+0 <= grid[i][j] <= 50*/
+int surfaceArea(vector<vector<int>> &grid) {
+    //模拟，遍历
+    //遍历二维数组，当遇到的格子高度大于0时，开始计算面积
+    //1.加上格子的高度*4，代表当前格子的4个面，加上2，代表格子顶部和底部
+    //2.当列数大于0时，将格子和左边的格子相比较，减去高度较小的格子的高度*2，代表两个格子粘合的部分
+    //3.当行数大于0时，将格子和上边的格子相比较，减去高度较小的格子的高度*2，代表两个格子粘合的部分
+    int res = 0;
+
+    for (int r = 0; r < grid.size(); r++) {
+        for (int c = 0; c < grid[0].size(); c++) {
+            if (grid[r][c] > 0) {
+                res += 2 + grid[r][c] * 4;
+                if (r > 0) {
+                    res -= min(grid[r - 1][c], grid[r][c]) * 2;
+                }
+                if (c > 0) {
+                    res -= min(grid[r][c - 1], grid[r][c]) * 2;
+                }
+            }
+        }
+    }
+
+    return res;
+}
+
+//数位和相等数对的最大和
+/*给你一个下标从 0 开始的数组 nums ，数组中的元素都是 正 整数。请你选出两个下标 i 和 j（i != j），且 nums[i] 的数位和 与  nums[j] 的数位和相等。
+
+请你找出所有满足条件的下标 i 和 j ，找出并返回 nums[i] + nums[j] 可以得到的 最大值 。
+
+ 
+
+示例 1：
+
+输入：nums = [18,43,36,13,7]
+输出：54
+解释：满足条件的数对 (i, j) 为：
+- (0, 2) ，两个数字的数位和都是 9 ，相加得到 18 + 36 = 54 。
+- (1, 4) ，两个数字的数位和都是 7 ，相加得到 43 + 7 = 50 。
+所以可以获得的最大和是 54 。
+示例 2：
+
+输入：nums = [10,12,19,14]
+输出：-1
+解释：不存在满足条件的数对，返回 -1 。
+ 
+
+提示：
+
+1 <= nums.length <= 105
+1 <= nums[i] <= 109*/
+int numericalDigitSum(int n) {
+    int res = 0;
+    while (n > 0) {
+        res += n % 10;
+        n /= 10;
+    }
+    return res;
+}
+int maximumSum(vector<int> &nums) {
+    //哈希表，优先队列
+    //用哈希表记录每个数的数位和
+    //并将相同数位和的数加入优先队列中
+    //当计算结束后，再遍历哈希表，并取出每个队列中的最大的两个数（如果队列容量大于1）相加，更新并维护最大值
+    //
+
+    int res = -1;
+    unordered_map<int, priority_queue<int>> map;
+
+    //优化：
+    //优先队列可以优化成仅用一个数，就是最大值
+    //哈希表的key还是数位和，value就是最大值
+    //计算出数位和后，仅需将其和已存在（如果有）的最大值相加，并更新维护所有数位和对的最大值。再更新当前数位和对应的数的最大值即可。
+    // unordered_map<int, int> map;
+    for (int n : nums) {
+        map[numericalDigitSum(n)].push(n);
+    }
+    for (auto entry : map) {
+        if (entry.second.size() > 1) {
+            int f = entry.second.top();
+            entry.second.pop();
+            int s = entry.second.top();
+            res = max(res, f + s);
+        }
+    }
+    return res;
+}
+
+//判断一个数是否迷人
+/*给你一个三位数整数 n 。
+
+如果经过以下修改得到的数字 恰好 包含数字 1 到 9 各一次且不包含任何 0 ，那么我们称数字 n 是 迷人的 ：
+
+将 n 与数字 2 * n 和 3 * n 连接 。
+如果 n 是迷人的，返回 true，否则返回 false 。
+
+连接 两个数字表示把它们首尾相接连在一起。比方说 121 和 371 连接得到 121371 。
+
+ 
+
+示例 1：
+
+输入：n = 192
+输出：true
+解释：我们将数字 n = 192 ，2 * n = 384 和 3 * n = 576 连接，得到 192384576 。这个数字包含 1 到 9 恰好各一次。
+示例 2：
+
+输入：n = 100
+输出：false
+解释：我们将数字 n = 100 ，2 * n = 200 和 3 * n = 300 连接，得到 100200300 。这个数字不符合上述条件。
+ 
+
+提示：
+
+100 <= n <= 999*/
+bool isFascinating(int n) {
+    //哈希表
+    //用一个集合来存数字的每一位
+    //将数字n每一位存入集合中，若这一位的数字已存在或者这一位的数字为0，则不符合条件，返回false
+    //将数字2n每一位存入集合中，若这一位的数字已存在或者这一位的数字为0，则不符合条件，返回false
+    //将数字3n每一位存入集合中，若这一位的数字已存在或者这一位的数字为0，则不符合条件，返回false
+    int n2 = 2 * n;
+    int n3 = 3 * n;
+    unordered_set<int> set;
+    while (n > 0) {
+        int left = n % 10;
+        if (left == 0 || set.find(left) != set.end()) {
+            return false;
+        }
+        set.insert(left);
+        n /= 10;
+    }
+    while (n2 > 0) {
+        int left = n2 % 10;
+        if (left == 0 || set.find(left) != set.end()) {
+            return false;
+        }
+        set.insert(left);
+        n2 /= 10;
+    }
+    while (n3 > 0) {
+        int left = n3 % 10;
+        if (left == 0 || set.find(left) != set.end()) {
+            return false;
+        }
+        set.insert(left);
+        n3 /= 10;
+    }
+    return set.size() == 9;
+}
+
 int main() {
     // cout << s << endl;
     /* vector<char> v1 = {'h', 'e', 'l', 'l', 'o'};
@@ -1855,7 +3215,15 @@ int main() {
 
     // cout << gcdOfStrings("LEET", "ABAB");
 
-    // auto res = findDifference({1, 2, 3}, {2, 4, 6});
+    // auto res = findDifference({1, 2, 3}, {2, 4, 6})
+
+    // cout << numRollsToTarget(20, 20, 300);
+
+    // cout << punishmentNumber(37);
+
+    // cout << pickGifts({25, 64, 9, 4, 100}, 4);
+
+    cout << findMaximumXORByTrie({3, 10, 5, 25, 2, 8});
 
     return 0;
 }

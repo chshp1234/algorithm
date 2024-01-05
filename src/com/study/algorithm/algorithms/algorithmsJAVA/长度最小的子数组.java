@@ -28,21 +28,18 @@ public class 长度最小的子数组 {
         if (nums == null || nums.length == 0) {
             return 0;
         }
-
-        // 前缀和，设置数组长度为nums.length + 1，并令第一项SUM[0] = 0，可以省去很多if判断（省去边界条件判断，第m~n的数组和为前n项的和减去前m-1项的和，
+        // 前缀和，二分查找
+        // 设置数组长度为nums.length + 1，并令第一项SUM[0] = 0，可以省去很多if判断（省去边界条件判断，第m~n的数组和为前n项的和减去前m-1项的和，
         // 但当m为0时，就需要进行边界条件判断，防止越界）
         int[] SUM = new int[nums.length + 1];
-
         SUM[0] = 0;
         SUM[1] = nums[0];
         // 计算前缀和
         for (int i = 0, l = nums.length; i < l; i++) {
             SUM[i + 1] = SUM[i] + nums[i];
         }
-
         // 因为数组都为正数，前缀和是个递增的数组，所以可采用二分查找
         int low = 1, high = nums.length;
-
         int result = 0;
 
         Loop:
@@ -63,7 +60,6 @@ public class 长度最小的子数组 {
                     continue Loop;
                 }
             }
-
             // 如果执行到此，说明长度为length情况下，没有子数组的和>=s，则最小子数组的长度肯定大于length
             // 令低位low=length + 1
             // 继续二分，令length = low + ((high - low) >> 1)，判断在low~high区间中位是否符合条件
