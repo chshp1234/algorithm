@@ -12,9 +12,7 @@ public class 两个数组的交集 {
 
     @Test
     public void 两个数组的交集() {
-        System.out.println(
-                "两个数组的交集:" +
-                Arrays.toString(intersectionByBinarySearch(new int[]{2}, new int[]{1, 2, 2, 1})));
+        System.out.println("两个数组的交集:" + Arrays.toString(intersectionByBinarySearch(new int[]{2}, new int[]{1, 2, 2, 1})));
     }
 
     //给定两个数组，编写一个函数来计算它们的交集。
@@ -105,12 +103,47 @@ public class 两个数组的交集 {
         }
 
         // 输出到结果数组中
-        int[] res   = new int[result.size()];
-        int   index = 0;
+        int[] res = new int[result.size()];
+        int index = 0;
         for (int num : result) {
             res[index++] = num;
         }
 
+        return res;
+    }
+
+
+    //排序，双指针
+    //先对两个数组进行排序，再用两个变量i1、i2指向两个数组下标，对数组进行遍历判断，并用一个数last记录上一个加入结果的数（去重）
+    //1.如果两个元素相同，两个下标+1，判断是否等于上一个加入的数last，如果不相等，则加入结果中，并将last更新为当前元素
+    //2.如果nums1[i1] > nums2[i2]，i1++；否则i2++;
+    //遍历到其中一个数组结尾时，即可退出循环，并将当前的列表转换成数组，返回
+    public int[] intersection(int[] nums1, int[] nums2) {
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int i1 = 0, i2 = 0, last = -1;
+        List<Integer> list = new ArrayList<>();
+
+        while (i1 < nums1.length && i2 < nums2.length) {
+            if (nums1[i1] == nums2[i2]) {
+                if (last != nums1[i1]) {
+                    list.add(nums1[i1]);
+                    last = nums1[i1];
+                }
+                i1++;
+                i2++;
+            } else if (nums1[i1] > nums2[i2]) {
+                i2++;
+            } else {
+                i1++;
+            }
+        }
+
+        int[] res = new int[list.size()];
+        i1 = 0;
+        for (int i : list) {
+            res[i1++] = i;
+        }
         return res;
     }
 }

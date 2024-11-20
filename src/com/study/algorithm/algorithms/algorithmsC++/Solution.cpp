@@ -899,6 +899,14 @@ int countIndexBit(int index) {
     }
     return count;
 }
+int countIndexBit2(int index) {
+    int count = 0;
+    while (index > 0) {
+        count++;
+        index &= (index - 1);
+    }
+    return count;
+}
 int sumIndicesWithKSetBits(vector<int> &&nums, int k) {
     /*
     模拟
